@@ -1,0 +1,9 @@
+{
+  "name": "Webkinz House",
+  "short_name": "Webkinz House",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#cfe0fb",
+  "theme_color": "#cfe0fb"
+}
