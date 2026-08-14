@@ -1693,6 +1693,54 @@
     transition:opacity 0.2s ease, transform 0.2s ease;
   }
   .todo-task-modal.open{display:block; opacity:1; transform:translate(-50%,-50%) scale(1);}
+
+  /* ---- Code Testing feature ---- */
+  .code-testing-row{display:flex; gap:8px; margin-top:10px;}
+  .code-testing-row input{
+    flex:1;
+    font-family:'Cutive Mono', monospace;
+    letter-spacing:0.04em;
+  }
+  .code-testing-preview{
+    width:150px; height:150px;
+    margin:16px auto 10px;
+    border-radius:16px;
+    overflow:hidden;
+    background:repeating-conic-gradient(#ddd 0% 25%, #fff 0% 50%) 0 0/14px 14px;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 4px 14px rgba(0,0,0,0.15);
+  }
+  .code-testing-preview img{width:100%; height:100%; object-fit:cover;}
+  .code-testing-name{
+    text-align:center;
+    font-family:var(--todo-page-font), 'Baloo 2', sans-serif;
+    font-weight:700;
+    font-size:19px;
+    color:#1b2b52;
+    margin-bottom:6px;
+    line-height:1.25;
+  }
+  .code-testing-date{
+    text-align:center;
+    font-family:'Cutive Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:0.03em;
+    color:#6b6b6b;
+  }
+  .code-used-modal{
+    background:#fdeaea;
+    border:2px solid #c0392b;
+  }
+  .code-used-banner{
+    text-align:center;
+    font-family:var(--todo-page-font), 'Baloo 2', sans-serif;
+    font-weight:800;
+    font-size:20px;
+    letter-spacing:0.01em;
+    color:#c0392b;
+    margin-bottom:4px;
+  }
+
   .todo-task-modal .todo-add-btn{
     color:#1b2b52 !important;
     background:var(--select-soft);
@@ -1770,6 +1818,13 @@
     gap:30px;
     justify-content:center;
   }
+  .codes-type-section{
+    margin-bottom:4px;
+    border-radius:14px;
+    padding:14px 8px;
+  }
+  .codes-type-pets{background:rgba(255,214,150,0.18);}
+  .codes-type-items{background:rgba(160,210,255,0.18);}
   .codes-slot{
     width:170px;
     display:flex;
@@ -2168,6 +2223,7 @@
 
 <div class="index-bar">
   <button class="index-btn" id="openIndexMenuBtn">Index</button>
+  <button class="index-btn" id="openCodeTestingBtn">Code Testing</button>
 </div>
 
 <div class="overlay" id="desktopIndexMenuOverlay"></div>
@@ -2254,6 +2310,7 @@
   <button class="mobile-tab" id="mobileCollectionsTab"><img class="mobile-tab-icon" id="tabIconCollections"><span>Collections</span></button>
   <button class="mobile-tab" id="mobileTodoTab"><img class="mobile-tab-icon" id="tabIconTodo"><span>Todo</span></button>
   <button class="mobile-tab" id="mobileIndexTab"><img class="mobile-tab-icon" id="tabIconIndex"><span>Index</span></button>
+  <button class="mobile-tab" id="mobileCodeTestingTab"><span id="mobileCodeTestingLabel">Code Testing</span></button>
 </div>
 
 <div class="overlay" id="mobileEditOverlay"></div>
@@ -2267,6 +2324,12 @@
   <div class="section-label" style="margin-top:0;">Codes</div>
   <button type="button" class="todo-add-btn" id="choiceUnusedCodesBtn">Unused codes</button>
   <button type="button" class="todo-add-btn" id="choiceUsedCodesBtn">Used codes</button>
+</div>
+<div class="todo-task-modal" id="codesTypeChoiceModal">
+  <button class="close-btn" id="codesTypeChoiceCloseBtn">&times;</button>
+  <div class="section-label" style="margin-top:0;" id="codesTypeChoiceTitle">Codes</div>
+  <button type="button" class="todo-add-btn" id="choiceCodesPetBtn">Pet Codes</button>
+  <button type="button" class="todo-add-btn" id="choiceCodesItemBtn">Item Codes</button>
 </div>
 <div class="todo-task-modal" id="collectionsChoiceModal">
   <button class="close-btn" id="collectionsChoiceCloseBtn">&times;</button>
@@ -2419,6 +2482,68 @@
   </div>
 </div>
 
+<div class="overlay" id="codeTestingOverlay"></div>
+<div class="panel" id="codeTestingPanel">
+  <div class="panel-head">
+    <button class="close-btn" id="codeTestingCloseBtn">&times;</button>
+    <div class="eyebrow">Test A Code</div>
+    <h2 class="lib-title" id="codeTestingTitleText">Code Testing</h2>
+    <div class="sub">Type a code to check if it's already been used.</div>
+  </div>
+  <div class="panel-body">
+    <div class="section-label" id="itemTestingTitleText">Item Testing</div>
+    <div class="section-bubble"></div>
+    <div class="code-testing-row">
+      <input type="text" id="itemTestingInput" class="lib-input" placeholder="0000-0000-0000-0000" maxlength="19">
+      <button type="button" class="primary" id="itemTestingCheckBtn">Check</button>
+    </div>
+    <div class="notes-status" id="itemTestingStatus">&nbsp;</div>
+
+    <div class="section-label" id="petTestingTitleText" style="margin-top:24px;">Pet Testing</div>
+    <div class="section-bubble"></div>
+    <div class="code-testing-row">
+      <input type="text" id="petTestingInput" class="lib-input" placeholder="00000000" maxlength="8">
+      <button type="button" class="primary" id="petTestingCheckBtn">Check</button>
+    </div>
+    <div class="notes-status" id="petTestingStatus">&nbsp;</div>
+  </div>
+</div>
+
+<div class="overlay" id="codeUsedOverlay"></div>
+<div class="todo-task-modal code-used-modal" id="codeUsedModal">
+  <button class="close-btn" id="codeUsedCloseBtn">&times;</button>
+  <div class="code-used-banner">This code has been used</div>
+  <div class="code-testing-preview"><img id="codeUsedPhoto" style="display:none;"></div>
+  <div class="code-testing-name" id="codeUsedName"></div>
+  <div class="code-testing-date" id="codeUsedDate"></div>
+</div>
+
+<div class="overlay" id="useItemPromptOverlay"></div>
+<div class="todo-task-modal" id="useItemPromptModal">
+  <button class="close-btn" id="useItemPromptCloseBtn">&times;</button>
+  <div class="section-label" style="margin-top:0;">Use Item?</div>
+  <div class="code-testing-preview"><img id="useItemPhoto" style="display:none;"></div>
+  <div class="code-testing-name" id="useItemName"></div>
+  <div class="form-row">
+    <button type="button" id="useItemCancelBtn">Cancel</button>
+    <button type="button" class="primary" id="useItemConfirmBtn">Yes, Use It</button>
+  </div>
+  <div class="notes-status" id="useItemStatus">&nbsp;</div>
+</div>
+
+<div class="overlay" id="namePetOverlay"></div>
+<div class="todo-task-modal" id="namePetModal">
+  <button class="close-btn" id="namePetCloseBtn">&times;</button>
+  <div class="section-label" style="margin-top:0;">Name Your Pet</div>
+  <div class="code-testing-preview"><img id="namePetPhoto" style="display:none;"></div>
+  <input type="text" id="namePetInput" class="lib-input" placeholder="Pet name" maxlength="40">
+  <div class="form-row">
+    <button type="button" id="namePetBackBtn">Back</button>
+    <button type="button" class="primary" id="namePetNextBtn">Next</button>
+  </div>
+  <div class="notes-status" id="namePetStatus">&nbsp;</div>
+</div>
+
 <div class="overlay" id="settingsOverlay"></div>
 <div class="panel" id="settingsPanel">
   <div class="panel-head">
@@ -2488,6 +2613,22 @@
     <div class="section-label">Fonts</div>
     <div class="section-bubble"></div>
     <button type="button" class="tool-btn" id="fontsPopupBtn">FONTS</button>
+
+    <div class="section-label">Code Testing Labels</div>
+    <div class="section-bubble"></div>
+    <div style="font-size:12px; opacity:0.8; margin-bottom:8px;">Rename the Code Testing button and its two sections.</div>
+    <div class="settings-room-row">
+      <span style="flex:1;">Main title</span>
+      <input type="text" id="codeTestingMainLabelInput" class="settings-room-name-input" maxlength="24">
+    </div>
+    <div class="settings-room-row">
+      <span style="flex:1;">Item section</span>
+      <input type="text" id="codeTestingItemLabelInput" class="settings-room-name-input" maxlength="24">
+    </div>
+    <div class="settings-room-row">
+      <span style="flex:1;">Pet section</span>
+      <input type="text" id="codeTestingPetLabelInput" class="settings-room-name-input" maxlength="24">
+    </div>
 
     <div class="section-label">Backup</div>
     <div class="section-bubble"></div>
@@ -2600,6 +2741,7 @@
 <div class="panel todo-panel" id="codesPanel">
   <div class="todo-panel-head">
     <button class="close-btn" id="codesCloseBtn">&times;</button>
+    <div class="eyebrow" id="codesEyebrowText">Pets</div>
     <h2 class="todo-title" id="codesTitleText">UNUSED CODES</h2>
   </div>
   <div class="panel-body todo-panel-body">
@@ -2854,6 +2996,21 @@
     return true;
   }
 
+  // shared code formatter. Item codes stay grouped as 0000-0000-0000-0000
+  // (16 chars). Pet codes are 8 plain characters with no dashes. Used both
+  // by the codes tracker's per-slot inputs and the Code Testing feature —
+  // keeping both sides using the same formatting is what makes a typed
+  // code actually match a stored one.
+  function formatCode(raw, maxLen){
+    var clean = (raw || '').replace(/[^a-zA-Z0-9]/g, '').slice(0, maxLen || 16);
+    if(maxLen === 8) return clean; // pet codes: no dashes
+    var groups = [];
+    for(var i = 0; i < clean.length; i += 4){
+      groups.push(clean.slice(i, i + 4));
+    }
+    return groups.join('-');
+  }
+
   // shared: close every popup panel — called before opening any one of them
   // so they never stack on top of each other
   function closeAllPanels(){
@@ -2874,6 +3031,7 @@
     try{ closePhotoLightbox(); }catch(e){}
     try{ closeRoomItemPicker(); }catch(e){}
     try{ closeStorageBox(); }catch(e){}
+    try{ closeCodeTesting(); }catch(e){}
   }
 
   var ROOM_TYPES = [
@@ -2890,6 +3048,7 @@
     tabIcons: {},
     outfitTypeImages: {},
     tabLabels: {},
+    codeTestingLabels: { main:'Code Testing', item:'Item Testing', pet:'Pet Testing' },
     pageTitle: null,
     centerRoomId: null,
     mainBgColor: '#CCE0FF',
@@ -4938,22 +5097,25 @@
       }
     }
 
-    // 4. any Used/Unused code pulled from this index entry
-    var codesKinds = ['used', 'unused'];
-    for(var ki = 0; ki < codesKinds.length; ki++){
-      var codesKind = codesKinds[ki];
-      var codesCats = await loadCodesCategories(codesKind);
-      for(var cci = 0; cci < codesCats.length; cci++){
-        var codesItems = await loadCodesItems(codesKind, codesCats[cci].id);
-        var codesChanged = false;
-        codesItems.forEach(function(cit){
-          if(cit.sourceIndexKind === kind && cit.sourceIndexId === entryId){
-            cit.name = newName;
-            cit.photo = newPhoto;
-            codesChanged = true;
-          }
-        });
-        if(codesChanged) await saveCodesItems(codesKind, codesCats[cci].id, codesItems);
+    // 4. any Used/Unused code pulled from this index entry (codes tracking
+    // only exists for Pets and Collections entries)
+    if(kind === 'pets' || kind === 'collections'){
+      var codesKinds = ['used', 'unused'];
+      for(var ki = 0; ki < codesKinds.length; ki++){
+        var codesKind = codesKinds[ki];
+        var codesCats = await loadCodesCategories(codesKind, kind);
+        for(var cci = 0; cci < codesCats.length; cci++){
+          var codesItems = await loadCodesItems(codesKind, codesCats[cci].id);
+          var codesChanged = false;
+          codesItems.forEach(function(cit){
+            if(cit.sourceIndexKind === kind && cit.sourceIndexId === entryId){
+              cit.name = newName;
+              cit.photo = newPhoto;
+              codesChanged = true;
+            }
+          });
+          if(codesChanged) await saveCodesItems(codesKind, codesCats[cci].id, codesItems);
+        }
       }
     }
 
@@ -5008,18 +5170,21 @@
       }
     }
 
-    // 4. any Used/Unused code pulled from this index entry
-    var codesKinds = ['used', 'unused'];
-    for(var ki = 0; ki < codesKinds.length; ki++){
-      var codesKind = codesKinds[ki];
-      var codesCats = await loadCodesCategories(codesKind);
-      for(var cci = 0; cci < codesCats.length; cci++){
-        var codesItems = await loadCodesItems(codesKind, codesCats[cci].id);
-        var keptCodes = codesItems.filter(function(cit){
-          return !(cit.sourceIndexKind === kind && cit.sourceIndexId === entryId);
-        });
-        if(keptCodes.length !== codesItems.length){
-          await saveCodesItems(codesKind, codesCats[cci].id, keptCodes);
+    // 4. any Used/Unused code pulled from this index entry (codes tracking
+    // only exists for Pets and Collections entries)
+    if(kind === 'pets' || kind === 'collections'){
+      var codesKinds = ['used', 'unused'];
+      for(var ki = 0; ki < codesKinds.length; ki++){
+        var codesKind = codesKinds[ki];
+        var codesCats = await loadCodesCategories(codesKind, kind);
+        for(var cci = 0; cci < codesCats.length; cci++){
+          var codesItems = await loadCodesItems(codesKind, codesCats[cci].id);
+          var keptCodes = codesItems.filter(function(cit){
+            return !(cit.sourceIndexKind === kind && cit.sourceIndexId === entryId);
+          });
+          if(keptCodes.length !== codesItems.length){
+            await saveCodesItems(codesKind, codesCats[cci].id, keptCodes);
+          }
         }
       }
     }
@@ -6042,6 +6207,7 @@
         appSettings.tabIcons = Object.assign({}, DEFAULT_SETTINGS.tabIcons, loaded.tabIcons || {});
         appSettings.outfitTypeImages = Object.assign({}, DEFAULT_SETTINGS.outfitTypeImages, loaded.outfitTypeImages || {});
         appSettings.tabLabels = Object.assign({}, DEFAULT_SETTINGS.tabLabels, loaded.tabLabels || {});
+        appSettings.codeTestingLabels = Object.assign({}, DEFAULT_SETTINGS.codeTestingLabels, loaded.codeTestingLabels || {});
       }
     }catch(e){ /* no saved settings yet */ }
   }
@@ -6078,6 +6244,7 @@
     renderSettingsRoomTypeList();
     renderSettingsTabIconList();
     renderSettingsOutfitImageList();
+    applyCodeTestingLabels();
     TAB_ICON_DEFS.forEach(function(t){
       var imgEl = document.getElementById(t.imgId);
       if(imgEl){
@@ -7633,6 +7800,7 @@
   var codesPanel = document.getElementById('codesPanel');
   var codesCloseBtn = document.getElementById('codesCloseBtn');
   var codesTitleText = document.getElementById('codesTitleText');
+  var codesEyebrowText = document.getElementById('codesEyebrowText');
   var codesCategoryInput = document.getElementById('codesCategoryInput');
   var codesAddCategoryBtn = document.getElementById('codesAddCategoryBtn');
   var codesAddStatus = document.getElementById('codesAddStatus');
@@ -7640,25 +7808,55 @@
   var codesEmptyNote = document.getElementById('codesEmptyNote');
 
   var currentCodesKind = null;
-  var codesCategoriesCache = {}; // kind -> [{id,name}]
+  var codesCategoriesCache = {}; // "kind:typeFilter" -> [{id,name}]
   var codesItemsCache = {};      // "kind:catId" -> [{id,name,photo,checked}]
 
-  function codesCategoriesKey(kind){ return 'codes-categories:' + kind; }
+  function codesCategoriesKey(kind, typeFilter){ return 'codes-categories:' + kind + ':' + typeFilter; }
+  function legacyCodesCategoriesKey(kind){ return 'codes-categories:' + kind; }
   function codesItemsKey(kind, catId){ return 'codes-items:' + kind + ':' + catId; }
 
-  async function loadCodesCategories(kind){
-    if(codesCategoriesCache[kind]) return codesCategoriesCache[kind];
-    try{
-      var res = await appStorage.get(codesCategoriesKey(kind), false);
-      codesCategoriesCache[kind] = res ? JSON.parse(res.value) : [];
-    }catch(e){
-      codesCategoriesCache[kind] = [];
+  // Categories used to be shared between Pets and Items within the same
+  // kind (used/unused) — creating one in the Pets view made it show up in
+  // the Items view too. Now each (kind, type) combination has its own
+  // independent category list. The first time either type is opened for a
+  // kind, this migrates from the old shared list: a category carries over
+  // into a type's list if it has at least one item of that type (or is
+  // empty, in which case it's safe to carry over into both). The old
+  // shared key is left alone (not deleted) since both types' migrations
+  // read from it independently.
+  async function loadCodesCategories(kind, typeFilter){
+    var cacheKey = kind + ':' + typeFilter;
+    if(codesCategoriesCache[cacheKey]) return codesCategoriesCache[cacheKey];
+
+    var res = null;
+    try{ res = await appStorage.get(codesCategoriesKey(kind, typeFilter), false); }catch(e){ /* key doesn't exist yet — fall through to migration below */ }
+
+    if(res){
+      try{ codesCategoriesCache[cacheKey] = JSON.parse(res.value); }catch(e){ codesCategoriesCache[cacheKey] = []; }
+      return codesCategoriesCache[cacheKey];
     }
-    return codesCategoriesCache[kind];
+
+    var legacyRes = null;
+    try{ legacyRes = await appStorage.get(legacyCodesCategoriesKey(kind), false); }catch(e){ /* no legacy data either — nothing to migrate */ }
+    var legacyCats = [];
+    try{ legacyCats = legacyRes ? JSON.parse(legacyRes.value) : []; }catch(e){}
+
+    var migrated = [];
+    for(var i = 0; i < legacyCats.length; i++){
+      var catItems = await loadCodesItems(kind, legacyCats[i].id);
+      var hasType = catItems.length === 0 || catItems.some(function(it){
+        return typeFilter === 'pets' ? it.sourceIndexKind === 'pets' : it.sourceIndexKind !== 'pets';
+      });
+      if(hasType) migrated.push(legacyCats[i]);
+    }
+    codesCategoriesCache[cacheKey] = migrated;
+    try{ await appStorage.set(codesCategoriesKey(kind, typeFilter), JSON.stringify(migrated), false); }catch(e){}
+    return codesCategoriesCache[cacheKey];
   }
-  async function saveCodesCategories(kind, arr){
-    codesCategoriesCache[kind] = arr;
-    try{ await appStorage.set(codesCategoriesKey(kind), JSON.stringify(arr), false); }catch(e){}
+  async function saveCodesCategories(kind, typeFilter, arr){
+    var cacheKey = kind + ':' + typeFilter;
+    codesCategoriesCache[cacheKey] = arr;
+    try{ await appStorage.set(codesCategoriesKey(kind, typeFilter), JSON.stringify(arr), false); }catch(e){}
   }
   async function loadCodesItems(kind, catId){
     var key = kind + ':' + catId;
@@ -7677,20 +7875,53 @@
     try{ await appStorage.set(codesItemsKey(kind, catId), JSON.stringify(arr), false); }catch(e){}
   }
 
+  var currentCodesTypeFilter = null; // 'pets' | 'collections'
+  var codesTypePending = null; // kind waiting on a type choice
+
   function openCodes(kind){
     closeAllPanels();
+    codesTypePending = kind;
+    document.getElementById('codesTypeChoiceTitle').textContent = CODES_KINDS[kind].title;
+    document.getElementById('choiceCodesPetBtn').textContent = 'Pet Codes';
+    document.getElementById('choiceCodesItemBtn').textContent = 'Item Codes';
+    openChoiceModal(document.getElementById('codesTypeChoiceModal'));
+  }
+
+  function openCodesForType(kind, typeFilter){
+    closeAllPanels();
     currentCodesKind = kind;
+    currentCodesTypeFilter = typeFilter;
     codesTitleText.textContent = CODES_KINDS[kind].title;
+    codesEyebrowText.textContent = typeFilter === 'pets' ? 'Pets' : 'Items';
     codesCategoryInput.value = '';
     codesAddStatus.textContent = '\u00a0';
     codesOverlay.classList.add('open');
     codesPanel.classList.add('open');
     renderCodesCategories(kind);
   }
+
+  document.getElementById('choiceCodesPetBtn').addEventListener('click', function(){
+    if(!codesTypePending) return;
+    closeAllChoiceModals();
+    openCodesForType(codesTypePending, 'pets');
+    codesTypePending = null;
+  });
+  document.getElementById('choiceCodesItemBtn').addEventListener('click', function(){
+    if(!codesTypePending) return;
+    closeAllChoiceModals();
+    openCodesForType(codesTypePending, 'collections');
+    codesTypePending = null;
+  });
+  document.getElementById('codesTypeChoiceCloseBtn').addEventListener('click', function(){
+    codesTypePending = null;
+    closeAllChoiceModals();
+  });
+
   function closeCodes(){
     codesOverlay.classList.remove('open');
     codesPanel.classList.remove('open');
     currentCodesKind = null;
+    currentCodesTypeFilter = null;
   }
   document.getElementById('openUsedCodes').addEventListener('click', function(){ openCodes('used'); });
   document.getElementById('openUnusedCodes').addEventListener('click', function(){ openCodes('unused'); });
@@ -7698,7 +7929,8 @@
   codesOverlay.addEventListener('click', closeCodes);
 
   async function renderCodesCategories(kind){
-    var categories = await loadCodesCategories(kind);
+    var typeFilter = currentCodesTypeFilter || 'pets';
+    var categories = await loadCodesCategories(kind, typeFilter);
     codesCategoryList.innerHTML = '';
     codesEmptyNote.style.display = categories.length === 0 ? 'block' : 'none';
 
@@ -7715,9 +7947,9 @@
         upBtn.title = 'Move up';
         upBtn.disabled = idx === 0;
         upBtn.addEventListener('click', async function(){
-          var cats = await loadCodesCategories(kind);
+          var cats = await loadCodesCategories(kind, typeFilter);
           if(moveArrayItem(cats, idx, -1)){
-            await saveCodesCategories(kind, cats);
+            await saveCodesCategories(kind, typeFilter, cats);
             renderCodesCategories(kind);
           }
         });
@@ -7727,9 +7959,9 @@
         downBtn.title = 'Move down';
         downBtn.disabled = idx === categories.length - 1;
         downBtn.addEventListener('click', async function(){
-          var cats = await loadCodesCategories(kind);
+          var cats = await loadCodesCategories(kind, typeFilter);
           if(moveArrayItem(cats, idx, 1)){
-            await saveCodesCategories(kind, cats);
+            await saveCodesCategories(kind, typeFilter, cats);
             renderCodesCategories(kind);
           }
         });
@@ -7753,10 +7985,17 @@
             return;
           }
           clearTimeout(codesCatDeleteTimer);
-          var arr = (await loadCodesCategories(kind)).filter(function(c){ return c.id !== cat.id; });
-          await saveCodesCategories(kind, arr);
-          try{ appStorage.delete(codesItemsKey(kind, cat.id), false); }catch(e){}
-          delete codesItemsCache[kind + ':' + cat.id];
+          // remove this category from THIS type's list only — the other
+          // type's list (if it also has this category) is untouched
+          var arr = (await loadCodesCategories(kind, typeFilter)).filter(function(c){ return c.id !== cat.id; });
+          await saveCodesCategories(kind, typeFilter, arr);
+          // only strip out items of THIS type — if the other type still
+          // has this category, its items must survive
+          var allItems = await loadCodesItems(kind, cat.id);
+          var kept = allItems.filter(function(it){
+            return typeFilter === 'pets' ? it.sourceIndexKind !== 'pets' : it.sourceIndexKind === 'pets';
+          });
+          await saveCodesItems(kind, cat.id, kept);
           renderCodesCategories(kind);
         });
 
@@ -7780,18 +8019,19 @@
     }
   }
 
-  async function ensureCodesCategory(kind, name){
-    var categories = await loadCodesCategories(kind);
+  async function ensureCodesCategory(kind, typeFilter, name){
+    var categories = await loadCodesCategories(kind, typeFilter);
     var existing = categories.find(function(c){ return c.name === name; });
     if(existing) return existing.id;
     var id = 'cc' + Date.now() + Math.random().toString(36).slice(2,6);
     categories.push({ id:id, name:name });
-    await saveCodesCategories(kind, categories);
+    await saveCodesCategories(kind, typeFilter, categories);
     return id;
   }
 
   async function moveCodeToUsed(catName, item, sourceKind, sourceCatId, sourceItems, sourceIdx){
-    var usedCatId = await ensureCodesCategory('used', catName);
+    var typeFilter = item.sourceIndexKind === 'pets' ? 'pets' : 'collections';
+    var usedCatId = await ensureCodesCategory('used', typeFilter, catName);
     var usedItems = await loadCodesItems('used', usedCatId);
     var moved = Object.assign({}, item, {
       id: 'ci' + Date.now() + Math.random().toString(36).slice(2,6),
@@ -7805,135 +8045,151 @@
     await saveCodesItems(sourceKind, sourceCatId, sourceItems);
   }
 
-  function renderCodesSlotGrid(grid, kind, catId, items, catName){
-    grid.innerHTML = '';
-    items.forEach(function(it, idx){
-      var slot = document.createElement('div');
-      slot.className = 'codes-slot';
+  function buildCodesSlot(it, kind, catId, items, catName, grid){
+    var slot = document.createElement('div');
+    slot.className = 'codes-slot';
 
-      var indexNameLabel = document.createElement('div');
-      indexNameLabel.className = 'codes-slot-index-name';
-      indexNameLabel.textContent = it.name;
-      indexNameLabel.title = it.name;
+    var indexNameLabel = document.createElement('div');
+    indexNameLabel.className = 'codes-slot-index-name';
+    indexNameLabel.textContent = it.name;
+    indexNameLabel.title = it.name;
 
-      var pic = document.createElement('div');
-      pic.className = 'codes-slot-picture';
-      if(it.photo){
-        var img = document.createElement('img');
-        img.src = it.photo;
-        pic.appendChild(img);
-      } else {
-        pic.textContent = 'picture goes here';
+    var pic = document.createElement('div');
+    pic.className = 'codes-slot-picture';
+    if(it.photo){
+      var img = document.createElement('img');
+      img.src = it.photo;
+      pic.appendChild(img);
+    } else {
+      pic.textContent = 'picture goes here';
+    }
+    var rm = document.createElement('button');
+    rm.className = 'codes-slot-remove';
+    rm.textContent = '\u00d7';
+    rm.addEventListener('click', async function(){
+      var arr = await loadCodesItems(kind, catId);
+      // find by id, not a loop index — the on-screen list may only be
+      // showing a filtered (Pets-only or Items-only) subset, so a loop
+      // index here would risk deleting the wrong entry from the full list
+      var realIdx = arr.findIndex(function(x){ return x.id === it.id; });
+      if(realIdx !== -1) arr.splice(realIdx, 1);
+      await saveCodesItems(kind, catId, arr);
+      renderCodesCategories(kind);
+    });
+    pic.appendChild(rm);
+
+    var row = document.createElement('div');
+    row.className = 'codes-slot-row';
+    var cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = !!it.checked;
+    cb.addEventListener('change', async function(){
+      if(kind === 'unused' && cb.checked){
+        cb.disabled = true;
+        var realIdx = items.findIndex(function(x){ return x.id === it.id; });
+        await moveCodeToUsed(catName, it, kind, catId, items, realIdx);
+        codesAddStatus.textContent = 'Moved "' + (it.name || 'code') + '" to Used Codes.';
+        renderCodesCategories(kind);
+        return;
       }
-      var rm = document.createElement('button');
-      rm.className = 'codes-slot-remove';
-      rm.textContent = '\u00d7';
-      rm.addEventListener('click', async function(){
-        var arr = await loadCodesItems(kind, catId);
-        arr.splice(idx, 1);
-        await saveCodesItems(kind, catId, arr);
-        renderCodesSlotGrid(grid, kind, catId, arr, catName);
-      });
-      pic.appendChild(rm);
+      it.checked = cb.checked;
+      await saveCodesItems(kind, catId, items);
+    });
 
-      var row = document.createElement('div');
-      row.className = 'codes-slot-row';
-      var cb = document.createElement('input');
-      cb.type = 'checkbox';
-      cb.checked = !!it.checked;
-      cb.addEventListener('change', async function(){
-        if(kind === 'unused' && cb.checked){
-          cb.disabled = true;
-          await moveCodeToUsed(catName, it, kind, catId, items, idx);
-          codesAddStatus.textContent = 'Moved "' + (it.name || 'code') + '" to Used Codes.';
-          renderCodesCategories(kind);
-          return;
-        }
-        it.checked = cb.checked;
-        await saveCodesItems(kind, catId, items);
-      });
-
-      var codeInput = document.createElement('textarea');
-      codeInput.className = 'codes-slot-code-input';
-      codeInput.rows = 1;
-      codeInput.placeholder = '0000-0000-0000-0000';
-      codeInput.value = it.code || '';
-      var codeSaveTimer = null;
-      function autosizeCodeInput(){
-        codeInput.style.height = 'auto';
-        codeInput.style.height = codeInput.scrollHeight + 'px';
+    var codeMaxLen = it.sourceIndexKind === 'pets' ? 8 : 16;
+    var codeInput = document.createElement('textarea');
+    codeInput.className = 'codes-slot-code-input';
+    codeInput.rows = 1;
+    codeInput.placeholder = it.sourceIndexKind === 'pets' ? '00000000' : '0000-0000-0000-0000';
+    codeInput.value = it.code || '';
+    var codeSaveTimer = null;
+    function autosizeCodeInput(){
+      codeInput.style.height = 'auto';
+      codeInput.style.height = codeInput.scrollHeight + 'px';
+    }
+    codeInput.addEventListener('input', function(){
+      var formatted = formatCode(codeInput.value, codeMaxLen);
+      if(formatted !== codeInput.value){
+        codeInput.value = formatted;
       }
-      function formatCode(raw){
-        var clean = raw.replace(/[^a-zA-Z0-9]/g, '').slice(0, 16);
-        var groups = [];
-        for(var i = 0; i < clean.length; i += 4){
-          groups.push(clean.slice(i, i + 4));
-        }
-        return groups.join('-');
-      }
-      codeInput.addEventListener('input', function(){
-        var formatted = formatCode(codeInput.value);
-        if(formatted !== codeInput.value){
-          codeInput.value = formatted;
-        }
-        autosizeCodeInput();
-        clearTimeout(codeSaveTimer);
-        codeSaveTimer = setTimeout(async function(){
-          it.code = codeInput.value;
-          await saveCodesItems(kind, catId, items);
-        }, 400);
-      });
-      codeInput.addEventListener('click', function(e){ e.stopPropagation(); });
-
-      row.appendChild(cb);
-      row.appendChild(codeInput);
-
-      var sourceLine = document.createElement('div');
-      sourceLine.className = 'codes-slot-source-line';
-      function refreshSourceLine(){
-        var displayDate = (kind === 'used' && it.dateUsed) ? it.dateUsed : it.dateObtained;
-        if(it.source || it.whoFrom || displayDate){
-          var whereWho = [it.source, it.whoFrom].filter(Boolean).join(' / ');
-          var parts = [];
-          if(whereWho) parts.push(whereWho);
-          if(displayDate) parts.push(formatMonthDay(displayDate));
-          sourceLine.textContent = parts.join(' - ');
-        } else {
-          sourceLine.textContent = '+ where/who/when obtained';
-        }
-      }
-      refreshSourceLine();
-      sourceLine.addEventListener('click', function(e){
-        e.stopPropagation();
-        openCodesSourcePrompt({ mode:'edit', kind:kind, catId:catId, grid:grid, items:items, item:it, catName:catName });
-      });
-
-      slot.appendChild(indexNameLabel);
-      slot.appendChild(pic);
-      slot.appendChild(row);
-      slot.appendChild(sourceLine);
-      grid.appendChild(slot);
       autosizeCodeInput();
+      clearTimeout(codeSaveTimer);
+      codeSaveTimer = setTimeout(async function(){
+        it.code = codeInput.value;
+        await saveCodesItems(kind, catId, items);
+      }, 400);
+    });
+    codeInput.addEventListener('click', function(e){ e.stopPropagation(); });
+
+    row.appendChild(cb);
+    row.appendChild(codeInput);
+
+    var sourceLine = document.createElement('div');
+    sourceLine.className = 'codes-slot-source-line';
+    function refreshSourceLine(){
+      var displayDate = (kind === 'used' && it.dateUsed) ? it.dateUsed : it.dateObtained;
+      if(it.source || it.whoFrom || displayDate){
+        var whereWho = [it.source, it.whoFrom].filter(Boolean).join(' / ');
+        var parts = [];
+        if(whereWho) parts.push(whereWho);
+        if(displayDate) parts.push(formatMonthDay(displayDate));
+        sourceLine.textContent = parts.join(' - ');
+      } else {
+        sourceLine.textContent = '+ where/who/when obtained';
+      }
+    }
+    refreshSourceLine();
+    sourceLine.addEventListener('click', function(e){
+      e.stopPropagation();
+      openCodesSourcePrompt({ mode:'edit', kind:kind, catId:catId, grid:grid, items:items, item:it, catName:catName });
+    });
+
+    slot.appendChild(indexNameLabel);
+    slot.appendChild(pic);
+    slot.appendChild(row);
+    slot.appendChild(sourceLine);
+    requestAnimationFrame(autosizeCodeInput);
+    return slot;
+  }
+
+  function buildCodesTypeSection(sourceIndexKind, visibleItems, fullItems, kind, catId, catName, outerGrid){
+    var wrap = document.createElement('div');
+    wrap.className = 'codes-type-section ' + (sourceIndexKind === 'pets' ? 'codes-type-pets' : 'codes-type-items');
+
+    var grid = document.createElement('div');
+    grid.className = 'codes-slot-grid';
+
+    visibleItems.forEach(function(it){
+      grid.appendChild(buildCodesSlot(it, kind, catId, fullItems, catName, outerGrid));
     });
 
     var addWrap = document.createElement('div');
     addWrap.className = 'codes-slot';
-
     var addSpacer = document.createElement('div');
     addSpacer.className = 'codes-slot-index-name';
     addSpacer.innerHTML = '&nbsp;';
     addSpacer.style.visibility = 'hidden';
-
     var addSlot = document.createElement('div');
     addSlot.className = 'codes-add-slot';
     addSlot.textContent = '+';
     addSlot.addEventListener('click', function(){
-      openCodesPicker(kind, catId, grid, catName);
+      openCodesPicker(kind, catId, outerGrid, catName, sourceIndexKind);
     });
-
     addWrap.appendChild(addSpacer);
     addWrap.appendChild(addSlot);
     grid.appendChild(addWrap);
+
+    wrap.appendChild(grid);
+    return wrap;
+  }
+
+  function renderCodesSlotGrid(grid, kind, catId, items, catName){
+    grid.innerHTML = '';
+    var typeFilter = currentCodesTypeFilter || 'pets';
+    var visibleItems = items.filter(function(it){
+      return typeFilter === 'pets' ? it.sourceIndexKind === 'pets' : it.sourceIndexKind !== 'pets';
+    });
+    grid.appendChild(buildCodesTypeSection(typeFilter, visibleItems, items, kind, catId, catName, grid));
   }
 
   async function addCodesCategory(){
@@ -7943,9 +8199,10 @@
       codesAddStatus.textContent = 'Type a category name first.';
       return;
     }
-    var arr = await loadCodesCategories(currentCodesKind);
+    var typeFilter = currentCodesTypeFilter || 'pets';
+    var arr = await loadCodesCategories(currentCodesKind, typeFilter);
     arr.push({ id:'cc'+Date.now()+Math.random().toString(36).slice(2,6), name:name });
-    await saveCodesCategories(currentCodesKind, arr);
+    await saveCodesCategories(currentCodesKind, typeFilter, arr);
     codesAddStatus.textContent = 'Added "' + name + '"';
     codesCategoryInput.value = '';
     renderCodesCategories(currentCodesKind);
@@ -7964,16 +8221,22 @@
   var codesPickerTarget = null; // { kind, catId, grid, catName }
   var codesPickerAllEntries = [];
 
-  async function openCodesPicker(kind, catId, grid, catName){
+  async function openCodesPicker(kind, catId, grid, catName, restrictSourceIndexKind){
     codesPickerTarget = { kind:kind, catId:catId, grid:grid, catName:catName };
     codesPickerSearch.value = '';
-    var petsNames = await loadIndexEntryNames('pets');
-    var colNames = await loadIndexEntryNames('collections');
-    codesPickerAllEntries = petsNames.map(function(n){
-      return { source:'Pets', id:n.id, name:n.name };
-    }).concat(colNames.map(function(n){
-      return { source:'Collections', id:n.id, name:n.name };
-    }));
+    codesPickerAllEntries = [];
+    if(restrictSourceIndexKind !== 'collections'){
+      var petsNames = await loadIndexEntryNames('pets');
+      codesPickerAllEntries = codesPickerAllEntries.concat(petsNames.map(function(n){
+        return { source:'Pets', id:n.id, name:n.name };
+      }));
+    }
+    if(restrictSourceIndexKind !== 'pets'){
+      var colNames = await loadIndexEntryNames('collections');
+      codesPickerAllEntries = codesPickerAllEntries.concat(colNames.map(function(n){
+        return { source:'Collections', id:n.id, name:n.name };
+      }));
+    }
     await renderCodesPickerResults(codesPickerAllEntries);
     codesPickerOverlay.classList.add('open');
     codesPickerModal.classList.add('open');
@@ -8233,6 +8496,293 @@
   codesSourceCloseBtn.addEventListener('click', closeCodesSourcePrompt);
   codesSourceOverlay.addEventListener('click', closeCodesSourcePrompt);
 
+  // ---- Code Testing feature ----
+  var codeTestingOverlay = document.getElementById('codeTestingOverlay');
+  var codeTestingPanel = document.getElementById('codeTestingPanel');
+  var codeTestingCloseBtn = document.getElementById('codeTestingCloseBtn');
+  var codeTestingTitleText = document.getElementById('codeTestingTitleText');
+  var itemTestingTitleText = document.getElementById('itemTestingTitleText');
+  var petTestingTitleText = document.getElementById('petTestingTitleText');
+  var itemTestingInput = document.getElementById('itemTestingInput');
+  var itemTestingCheckBtn = document.getElementById('itemTestingCheckBtn');
+  var itemTestingStatus = document.getElementById('itemTestingStatus');
+  var petTestingInput = document.getElementById('petTestingInput');
+  var petTestingCheckBtn = document.getElementById('petTestingCheckBtn');
+  var petTestingStatus = document.getElementById('petTestingStatus');
+
+  function applyCodeTestingLabels(){
+    var labels = appSettings.codeTestingLabels || DEFAULT_SETTINGS.codeTestingLabels;
+    var openBtn = document.getElementById('openCodeTestingBtn');
+    var mobileLabel = document.getElementById('mobileCodeTestingLabel');
+    if(openBtn) openBtn.textContent = labels.main;
+    if(mobileLabel) mobileLabel.textContent = labels.main;
+    if(codeTestingTitleText) codeTestingTitleText.textContent = labels.main;
+    if(itemTestingTitleText) itemTestingTitleText.textContent = labels.item;
+    if(petTestingTitleText) petTestingTitleText.textContent = labels.pet;
+
+    var mainInput = document.getElementById('codeTestingMainLabelInput');
+    var itemInput = document.getElementById('codeTestingItemLabelInput');
+    var petInput = document.getElementById('codeTestingPetLabelInput');
+    if(mainInput && document.activeElement !== mainInput) mainInput.value = labels.main;
+    if(itemInput && document.activeElement !== itemInput) itemInput.value = labels.item;
+    if(petInput && document.activeElement !== petInput) petInput.value = labels.pet;
+  }
+
+  document.getElementById('codeTestingMainLabelInput').addEventListener('change', async function(){
+    var val = this.value.trim();
+    appSettings.codeTestingLabels.main = val || DEFAULT_SETTINGS.codeTestingLabels.main;
+    await saveSettings();
+    applyCodeTestingLabels();
+  });
+  document.getElementById('codeTestingItemLabelInput').addEventListener('change', async function(){
+    var val = this.value.trim();
+    appSettings.codeTestingLabels.item = val || DEFAULT_SETTINGS.codeTestingLabels.item;
+    await saveSettings();
+    applyCodeTestingLabels();
+  });
+  document.getElementById('codeTestingPetLabelInput').addEventListener('change', async function(){
+    var val = this.value.trim();
+    appSettings.codeTestingLabels.pet = val || DEFAULT_SETTINGS.codeTestingLabels.pet;
+    await saveSettings();
+    applyCodeTestingLabels();
+  });
+
+  function openCodeTesting(){
+    closeAllPanels();
+    codeTestingOverlay.classList.add('open');
+    codeTestingPanel.classList.add('open');
+    itemTestingInput.value = '';
+    petTestingInput.value = '';
+    itemTestingStatus.textContent = '\u00a0';
+    petTestingStatus.textContent = '\u00a0';
+  }
+  function closeCodeTesting(){
+    codeTestingOverlay.classList.remove('open');
+    codeTestingPanel.classList.remove('open');
+  }
+  document.getElementById('openCodeTestingBtn').addEventListener('click', openCodeTesting);
+  document.getElementById('mobileCodeTestingTab').addEventListener('click', openCodeTesting);
+  codeTestingCloseBtn.addEventListener('click', closeCodeTesting);
+  codeTestingOverlay.addEventListener('click', closeCodeTesting);
+
+  itemTestingInput.addEventListener('input', function(){
+    var formatted = formatCode(itemTestingInput.value, 16);
+    if(formatted !== itemTestingInput.value) itemTestingInput.value = formatted;
+  });
+  petTestingInput.addEventListener('input', function(){
+    var formatted = formatCode(petTestingInput.value, 8);
+    if(formatted !== petTestingInput.value) petTestingInput.value = formatted;
+  });
+
+  // finds a codes item whose code matches, scanning every category within
+  // the given kind ('used' or 'unused'), restricted to entries sourced from
+  // the given index kind ('pets' or 'collections')
+  async function findCodeMatch(sourceIndexKind, codesKind, code){
+    var cats = await loadCodesCategories(codesKind, sourceIndexKind);
+    var cleanCode = code.replace(/-/g, '');
+    for(var i = 0; i < cats.length; i++){
+      var items = await loadCodesItems(codesKind, cats[i].id);
+      for(var j = 0; j < items.length; j++){
+        var it = items[j];
+        var storedClean = (it.code || '').toUpperCase().replace(/-/g, '');
+        if(it.sourceIndexKind === sourceIndexKind && storedClean === cleanCode){
+          return { item: it, catId: cats[i].id, catName: cats[i].name };
+        }
+      }
+    }
+    return null;
+  }
+
+  // moves one codes item from 'unused' into 'used' (creating/reusing a
+  // same-named category there, via the same helper the checkbox-based
+  // "mark as used" flow uses), stamping the date it was used. Only ever
+  // called on explicit confirmation — nothing changes until then, so
+  // backing out of either prompt leaves the code untouched in Unused.
+  async function moveTestedCodeToUsed(match, overrideName){
+    var unusedItems = await loadCodesItems('unused', match.catId);
+    var idx = unusedItems.findIndex(function(i){ return i.id === match.item.id; });
+    if(idx !== -1) unusedItems.splice(idx, 1);
+    await saveCodesItems('unused', match.catId, unusedItems);
+
+    var typeFilter = match.item.sourceIndexKind === 'pets' ? 'pets' : 'collections';
+    var usedCatId = await ensureCodesCategory('used', typeFilter, match.catName);
+    var usedItems = await loadCodesItems('used', usedCatId);
+    var movedItem = Object.assign({}, match.item, {
+      id: 'ci' + Date.now() + Math.random().toString(36).slice(2,6),
+      name: overrideName || match.item.name,
+      checked: true,
+      dateUsed: todayISO()
+    });
+    usedItems.push(movedItem);
+    await saveCodesItems('used', usedCatId, usedItems);
+
+    // refresh the codes panel if it's currently open, so the change is visible
+    if(currentCodesKind) renderCodesCategories(currentCodesKind);
+
+    return movedItem;
+  }
+
+  function formatFullDate(iso){
+    if(!iso) return '';
+    var parts = iso.split('-');
+    if(parts.length !== 3) return iso;
+    var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var m = parseInt(parts[1], 10);
+    var d = parseInt(parts[2], 10);
+    var y = parts[0];
+    if(isNaN(m) || isNaN(d)) return iso;
+    return months[m-1] + ' ' + d + ', ' + y;
+  }
+
+  // ---- "already used" popup ----
+  var codeUsedOverlay = document.getElementById('codeUsedOverlay');
+  var codeUsedModal = document.getElementById('codeUsedModal');
+  var codeUsedCloseBtn = document.getElementById('codeUsedCloseBtn');
+  var codeUsedPhoto = document.getElementById('codeUsedPhoto');
+  var codeUsedName = document.getElementById('codeUsedName');
+  var codeUsedDate = document.getElementById('codeUsedDate');
+
+  function showCodeUsedPopup(item){
+    if(item.photo){ codeUsedPhoto.src = item.photo; codeUsedPhoto.style.display = ''; }
+    else { codeUsedPhoto.style.display = 'none'; }
+    codeUsedName.textContent = item.name || '';
+    var dateStr = item.dateUsed || item.dateObtained;
+    codeUsedDate.textContent = dateStr ? ('Used on ' + formatFullDate(dateStr)) : 'Used on an unknown date';
+    codeUsedOverlay.classList.add('open');
+    codeUsedModal.classList.add('open');
+  }
+  function closeCodeUsedPopup(){
+    codeUsedOverlay.classList.remove('open');
+    codeUsedModal.classList.remove('open');
+  }
+  codeUsedCloseBtn.addEventListener('click', closeCodeUsedPopup);
+  codeUsedOverlay.addEventListener('click', closeCodeUsedPopup);
+
+  // ---- "use item?" prompt (Item Testing, unused code) ----
+  var useItemPromptOverlay = document.getElementById('useItemPromptOverlay');
+  var useItemPromptModal = document.getElementById('useItemPromptModal');
+  var useItemPromptCloseBtn = document.getElementById('useItemPromptCloseBtn');
+  var useItemPhoto = document.getElementById('useItemPhoto');
+  var useItemName = document.getElementById('useItemName');
+  var useItemConfirmBtn = document.getElementById('useItemConfirmBtn');
+  var useItemCancelBtn = document.getElementById('useItemCancelBtn');
+  var useItemStatus = document.getElementById('useItemStatus');
+  var useItemPending = null;
+
+  function showUseItemPrompt(match){
+    useItemPending = match;
+    if(match.item.photo){ useItemPhoto.src = match.item.photo; useItemPhoto.style.display = ''; }
+    else { useItemPhoto.style.display = 'none'; }
+    useItemName.textContent = match.item.name || '';
+    useItemStatus.textContent = '\u00a0';
+    useItemPromptOverlay.classList.add('open');
+    useItemPromptModal.classList.add('open');
+  }
+  function closeUseItemPrompt(){
+    useItemPromptOverlay.classList.remove('open');
+    useItemPromptModal.classList.remove('open');
+    useItemPending = null;
+  }
+  useItemPromptCloseBtn.addEventListener('click', closeUseItemPrompt);
+  useItemCancelBtn.addEventListener('click', closeUseItemPrompt);
+  useItemConfirmBtn.addEventListener('click', async function(){
+    if(!useItemPending) return;
+    useItemConfirmBtn.disabled = true;
+    await moveTestedCodeToUsed(useItemPending);
+    useItemConfirmBtn.disabled = false;
+    closeUseItemPrompt();
+    itemTestingStatus.textContent = 'Marked as used.';
+    itemTestingInput.value = '';
+  });
+
+  // ---- "name your pet" screen (Pet Testing, unused code) ----
+  var namePetOverlay = document.getElementById('namePetOverlay');
+  var namePetModal = document.getElementById('namePetModal');
+  var namePetCloseBtn = document.getElementById('namePetCloseBtn');
+  var namePetPhoto = document.getElementById('namePetPhoto');
+  var namePetInput = document.getElementById('namePetInput');
+  var namePetBackBtn = document.getElementById('namePetBackBtn');
+  var namePetNextBtn = document.getElementById('namePetNextBtn');
+  var namePetStatus = document.getElementById('namePetStatus');
+  var namePetPending = null;
+
+  function showNamePetPrompt(match){
+    namePetPending = match;
+    if(match.item.photo){ namePetPhoto.src = match.item.photo; namePetPhoto.style.display = ''; }
+    else { namePetPhoto.style.display = 'none'; }
+    namePetInput.value = '';
+    namePetStatus.textContent = '\u00a0';
+    namePetOverlay.classList.add('open');
+    namePetModal.classList.add('open');
+    namePetInput.focus();
+  }
+  function closeNamePetPrompt(){
+    namePetOverlay.classList.remove('open');
+    namePetModal.classList.remove('open');
+    namePetPending = null;
+  }
+  namePetCloseBtn.addEventListener('click', closeNamePetPrompt);
+  namePetBackBtn.addEventListener('click', closeNamePetPrompt);
+  namePetNextBtn.addEventListener('click', async function(){
+    if(!namePetPending) return;
+    var name = namePetInput.value.trim();
+    if(!name){
+      namePetStatus.textContent = 'Please enter a name first.';
+      return;
+    }
+    namePetNextBtn.disabled = true;
+    var movedItem = await moveTestedCodeToUsed(namePetPending, name);
+    await syncEntryToMainPanel('pets', name, movedItem.photo, 'pets', movedItem.sourceIndexId);
+    namePetNextBtn.disabled = false;
+    closeNamePetPrompt();
+    petTestingStatus.textContent = name + ' was added to your Pets!';
+    petTestingInput.value = '';
+  });
+
+  // ---- the actual check flow ----
+  async function checkCode(sourceIndexKind, rawCode, statusEl){
+    var maxLen = sourceIndexKind === 'pets' ? 8 : 16;
+    var code = formatCode(rawCode, maxLen).toUpperCase();
+    if(!code){
+      statusEl.textContent = 'Type a code first.';
+      return;
+    }
+    statusEl.textContent = 'Checking...';
+
+    var usedMatch = await findCodeMatch(sourceIndexKind, 'used', code);
+    if(usedMatch){
+      statusEl.textContent = '\u00a0';
+      showCodeUsedPopup(usedMatch.item);
+      return;
+    }
+
+    var unusedMatch = await findCodeMatch(sourceIndexKind, 'unused', code);
+    if(!unusedMatch){
+      statusEl.textContent = 'That code wasn\u2019t found in either Used or Unused.';
+      return;
+    }
+
+    statusEl.textContent = '\u00a0';
+    if(sourceIndexKind === 'collections'){
+      showUseItemPrompt(unusedMatch);
+    } else {
+      showNamePetPrompt(unusedMatch);
+    }
+  }
+
+  itemTestingCheckBtn.addEventListener('click', function(){
+    checkCode('collections', itemTestingInput.value, itemTestingStatus);
+  });
+  itemTestingInput.addEventListener('keydown', function(e){
+    if(e.key === 'Enter') checkCode('collections', itemTestingInput.value, itemTestingStatus);
+  });
+  petTestingCheckBtn.addEventListener('click', function(){
+    checkCode('pets', petTestingInput.value, petTestingStatus);
+  });
+  petTestingInput.addEventListener('keydown', function(e){
+    if(e.key === 'Enter') checkCode('pets', petTestingInput.value, petTestingStatus);
+  });
+
   // ---- mobile preview (phone-frame mockup) ----
   document.getElementById('openMobilePreviewBtn').addEventListener('click', function(){
     document.body.classList.toggle('simulate-mobile');
@@ -8281,12 +8831,14 @@
 
   var choiceOverlay = document.getElementById('choiceOverlay');
   var codesChoiceModal = document.getElementById('codesChoiceModal');
+  var codesTypeChoiceModal = document.getElementById('codesTypeChoiceModal');
   var collectionsChoiceModal = document.getElementById('collectionsChoiceModal');
   var indexChoiceModal = document.getElementById('indexChoiceModal');
 
   function closeAllChoiceModals(){
     choiceOverlay.classList.remove('open');
     codesChoiceModal.classList.remove('open');
+    codesTypeChoiceModal.classList.remove('open');
     collectionsChoiceModal.classList.remove('open');
     indexChoiceModal.classList.remove('open');
   }
